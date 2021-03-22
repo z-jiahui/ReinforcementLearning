@@ -143,6 +143,7 @@ class Model():
         prc_next_state_batch = torch.cat(prc_next_state_batch)
         done_batch = torch.tensor(done_batch)
         #计算目标Q值
+        
         with torch.no_grad():
           output = self.eval_net(prc_state_batch)
           maxvalue = torch.max(output, 1)[1]
