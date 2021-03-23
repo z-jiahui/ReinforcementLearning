@@ -60,13 +60,13 @@ EPS_END = 0.01
 EPS_DECAY = 10000
 GAMMA = 0.99
 LR = 1e-4
-TARGET_NET_UPDATE_FREQ = 500
-MEMORY_SIZE = 1E5
-BATCH_SIZE = 32
+TARGET_NET_UPDATE_FREQ = 20
+MEMORY_SIZE = 1E6
+BATCH_SIZE = 64
 LEARN_START = 1E4
 MAX_FRAMES = 1E6
-LEARNING_TARE = 0.01
-MAX_EPISODE = 3000
+LEARNING_TARE = 0.005
+MAX_EPISODE = 1000
 
 class Model():
   def __init__(self, env):
@@ -160,12 +160,10 @@ class Model():
         loss.backward()
         nn.utils.clip_grad_norm_(self.eval_net.parameters(), 5)
         self.optimizer.step()
-        #更新targetNet的参数
-        update_count += 1
-        if self.target_update_freq < update_count:
-          self.target_net.load_state_dict(self.eval_net.state_dict())
-          update_count = 0
-          print("update target")
+      #更新targetNet的参数
+      if i % self.target_update_freq == 0:
+        self.target_net.load_state_dict(self.eval_net.state_dict())
+        print("update target")
 
   def evaluate(self, episode = 50):
     reward = []
